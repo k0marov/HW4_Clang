@@ -2,10 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 
-const int MAXSIZE = 100000;
-
 const int MINLEN = 8; 
 const int MAXLEN = 14; 
+
+// Since all passwords with length > 14 don't fit the reqiurements, 
+// We can read just MAXLEN+1 characters. 
+// (The other +1 is for the '\0' character)
+const int MAXSIZE = MAXLEN+1+1;
 
 const char MINCHAR = 33; 
 const char MAXCHAR = 126; 
@@ -21,10 +24,15 @@ int validate_chars(char pass[], int len) {
     if (c < MINCHAR || c > MAXCHAR) {
       return 0; 
     }
-    has_lower |= islower(c);
-    has_upper |= isupper(c);
-    has_digit |= isdigit(c); 
-    has_other |= !(has_lower || has_upper || has_digit); 
+    if (islower(c)) {
+      has_lower = 1; 
+    } else if (isupper(c)) {
+      has_upper = 1; 
+    } else if (isdigit(c)) {
+      has_digit = 1; 
+    } else {
+      has_other = 1; 
+    }
   }
   return (has_lower+has_upper+has_digit+has_other) >= 3; 
 }
